@@ -6,20 +6,13 @@
     <title>Inwentaryzacja</title>
     <script crossorigin src="https://unpkg.com/react@18.2.0/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone@7.23.6/babel.min.js"></script>
-    <!-- Używaj starszej, stabilnej wersji Lucide -->
-    <script src="https://unpkg.com/lucide-react@0.244.0/dist/umd/lucide-react.js"></script>
+    <!-- Starsza, sprawdzona wersja Babel -->
+    <script src="https://unpkg.com/@babel/standalone@7.20.0/babel.min.js"></script>
+    <!-- Bez Lucide na razie -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
     <div id="root"></div>
-    <script type="text/babel">
-        // Sprawdź czy biblioteki się załadowały
-        if (typeof React === 'undefined' || typeof ReactDOM === 'undefined' || typeof LucideReact === 'undefined') {
-            document.getElementById('root').innerHTML = '<div style="padding: 20px; color: red;">Błąd ładowania bibliotek. Odśwież stronę.</div>';
-        } else {
-            // Twój kod aplikacji tutaj
-        }
-    </script>
+    <script type="text/babel" src="app.js"></script>
 </body>
 </html>

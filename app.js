@@ -1,7 +1,7 @@
+Oto kompletny plik `app.js` z emoji zamiast ikon Lucide:
+
+```javascript
 const { useState, useEffect, useRef } = React;
-const { Search, Package, CheckCircle, AlertCircle, RotateCcw, Edit3, Trash2, History, Settings, Eye, EyeOff } = LucideReact;
-
-
 
 const InventoryApp = () => {
   // Przykładowe dane produktów z 8-cyfrowymi kodami SAP
@@ -23,11 +23,11 @@ const InventoryApp = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [inputValue, setInputValue] = useState('');
   const [inventoryData, setInventoryData] = useState({});
-  const [inventoryHistory, setInventoryHistory] = useState({}); // Historia wszystkich wpisów dla każdego produktu
-  const [isAdminView, setIsAdminView] = useState(false); // Przełączanie między widokami
-  const [showPinModal, setShowPinModal] = useState(false); // Modal z PINem
-  const [pinInput, setPinInput] = useState(''); // Wprowadzony PIN
-  const [pinError, setPinError] = useState(false); // Błąd PINu
+  const [inventoryHistory, setInventoryHistory] = useState({});
+  const [isAdminView, setIsAdminView] = useState(false);
+  const [showPinModal, setShowPinModal] = useState(false);
+  const [pinInput, setPinInput] = useState('');
+  const [pinError, setPinError] = useState(false);
   
   const searchInputRef = useRef(null);
   const quantityInputRef = useRef(null);
@@ -35,7 +35,6 @@ const InventoryApp = () => {
 
   const ADMIN_PIN = '1234';
 
-  // Filtrowanie produktów na podstawie wyszukiwania
   useEffect(() => {
     if (searchTerm === '') {
       setFilteredProducts(products);
@@ -48,14 +47,12 @@ const InventoryApp = () => {
     }
   }, [searchTerm, products]);
 
-  // Automatyczne focusowanie na input ilości po wybraniu produktu
   useEffect(() => {
     if (selectedProduct && quantityInputRef.current) {
       quantityInputRef.current.focus();
     }
   }, [selectedProduct]);
 
-  // Auto-focus na PIN input po otwarciu modala
   useEffect(() => {
     if (showPinModal && pinInputRef.current) {
       pinInputRef.current.focus();
@@ -67,10 +64,8 @@ const InventoryApp = () => {
 
   const handleAdminToggle = () => {
     if (isAdminView) {
-      // Wylogowanie z panelu administratora
       setIsAdminView(false);
     } else {
-      // Próba wejścia do panelu administratora
       setShowPinModal(true);
       setPinInput('');
       setPinError(false);
@@ -86,7 +81,6 @@ const InventoryApp = () => {
     } else {
       setPinError(true);
       setPinInput('');
-      // Auto-focus z powrotem na input
       setTimeout(() => {
         if (pinInputRef.current) {
           pinInputRef.current.focus();
@@ -123,22 +117,19 @@ const InventoryApp = () => {
         const timestamp = Date.now();
         
         if (isAddition) {
-          // Dodaj nowy wpis do historii
           setInventoryHistory(prev => ({
             ...prev,
             [selectedProduct.id]: [
               ...(prev[selectedProduct.id] || []),
-              { id: timestamp, quantity, timestamp, location: `Lokalizacja ${(prev[selectedProduct.id]?.length || 0) + 1}` }
+              { id: timestamp, quantity, timestamp, location: `Lokalizacja ${ (prev[selectedProduct.id]?.length || 0) + 1 } ` }
             ]
           }));
           
-          // Zaktualizuj łączną ilość
           setInventoryData(prev => ({
             ...prev,
             [selectedProduct.id]: (prev[selectedProduct.id] || 0) + quantity
           }));
         } else {
-          // Zastąp wszystkie wpisy jednym nowym
           setInventoryHistory(prev => ({
             ...prev,
             [selectedProduct.id]: [
@@ -152,12 +143,10 @@ const InventoryApp = () => {
           }));
         }
         
-        // Wyczyść formularz i wróć do wyszukiwania
         setSelectedProduct(null);
         setInputValue('');
         setSearchTerm('');
         
-        // Focus z powrotem na wyszukiwanie
         setTimeout(() => {
           if (searchInputRef.current) {
             searchInputRef.current.focus();
@@ -186,7 +175,6 @@ const InventoryApp = () => {
         entry.id === entryId ? { ...entry, quantity: newQuantity } : entry
       );
       
-      // Przelicz łączną ilość
       const totalQuantity = updatedHistory.reduce((sum, entry) => sum + entry.quantity, 0);
       setInventoryData(prevData => ({
         ...prevData,
@@ -206,7 +194,6 @@ const InventoryApp = () => {
       const updatedHistory = productHistory.filter(entry => entry.id !== entryId);
       
       if (updatedHistory.length === 0) {
-        // Usuń produkt z inwentaryzacji jeśli nie ma żadnych wpisów
         setInventoryData(prevData => {
           const newData = { ...prevData };
           delete newData[productId];
@@ -217,7 +204,6 @@ const InventoryApp = () => {
         delete newHistory[productId];
         return newHistory;
       } else {
-        // Przelicz łączną ilość
         const totalQuantity = updatedHistory.reduce((sum, entry) => sum + entry.quantity, 0);
         setInventoryData(prevData => ({
           ...prevData,
@@ -248,9 +234,7 @@ const InventoryApp = () => {
   const getProductStatus = (product) => {
     const counted = inventoryData[product.id];
     if (counted === undefined) return 'pending';
-    // Dla zliczającego nie pokazujemy czy ilość się zgadza
     if (!isAdminView) return 'counted';
-    // Dla administratora pokazujemy pełny status
     if (counted === product.expectedQty) return 'match';
     return 'diff';
   };
@@ -258,11 +242,10 @@ const InventoryApp = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-              <Package className="text-blue-600" />
+              <span className="text-blue-600 text-2xl">📦</span>
               Inwentaryzacja
               {isAdminView && <span className="text-lg text-orange-600">(Administrator)</span>}
             </h1>
@@ -271,7 +254,7 @@ const InventoryApp = () => {
                 onClick={handleAdminToggle}
                 className="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                {isAdminView ? <EyeOff className="w-4 h-4" /> : <Settings className="w-4 h-4" />}
+                <span className="text-sm">{isAdminView ? '👁️' : '⚙️'}</span>
                 {isAdminView ? 'Widok zliczającego' : 'Panel administratora'}
               </button>
               <div className="text-right">
@@ -279,24 +262,22 @@ const InventoryApp = () => {
                   {isAdminView ? 'Postęp inwentaryzacji' : 'Pozycje ze wpisami'}
                 </div>
                 <div className="text-lg font-bold text-blue-600">
-                  {countedProducts}{isAdminView ? `/${totalProducts}` : ''}
+                  {countedProducts}{isAdminView ? `/ ${ totalProducts } ` : ''}
                 </div>
               </div>
             </div>
           </div>
           
-          {/* Progress bar - tylko dla administratora */}
           {isAdminView && (
             <div className="w-full bg-gray-200 rounded-full h-3">
               <div 
                 className="bg-blue-600 h-3 rounded-full transition-all duration-300"
-                style={{ width: `${(countedProducts / totalProducts) * 100}%` }}
+                style={{ width: `${ (countedProducts / totalProducts) * 100 }% ` }}
               ></div>
             </div>
           )}
         </div>
 
-        {/* Widok administratora */}
         {isAdminView ? (
           <AdminView 
             products={products}
@@ -305,7 +286,6 @@ const InventoryApp = () => {
             getProductStatus={getProductStatus}
           />
         ) : (
-          /* Widok zliczającego */
           <>
             {!selectedProduct ? (
               <CounterSearchView 
@@ -337,7 +317,6 @@ const InventoryApp = () => {
               />
             )}
 
-            {/* Quick stats dla zliczającego */}
             {countedProducts > 0 && (
               <QuickStats 
                 products={products}
@@ -348,7 +327,6 @@ const InventoryApp = () => {
           </>
         )}
 
-        {/* Modal z PINem */}
         {showPinModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 w-96 max-w-sm mx-4 shadow-xl">
@@ -369,9 +347,9 @@ const InventoryApp = () => {
                     setPinError(false);
                   }}
                   onKeyPress={handlePinKeyPress}
-                  className={`w-full px-4 py-3 text-2xl text-center border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono tracking-widest ${
-                    pinError ? 'border-red-500 bg-red-50' : 'border-gray-300'
-                  }`}
+                  className={`w - full px - 4 py - 3 text - 2xl text - center border rounded - lg focus: ring - 2 focus: ring - blue - 500 focus: border - transparent font - mono tracking - widest ${
+  pinError ? 'border-red-500 bg-red-50' : 'border-gray-300'
+} `}
                   placeholder="• • • •"
                   maxLength="4"
                   autoComplete="off"
@@ -410,7 +388,6 @@ const InventoryApp = () => {
   );
 };
 
-// Komponent widoku zliczającego - wyszukiwanie
 const CounterSearchView = ({ 
   searchTerm, setSearchTerm, filteredProducts, inventoryData, inventoryHistory, 
   getProductStatus, handleProductSelect, handleKeyPress, searchInputRef, isAdminView 
@@ -421,7 +398,7 @@ const CounterSearchView = ({
         Wyszukaj produkt (kod SAP lub nazwa)
       </label>
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">🔍</span>
         <input
           ref={searchInputRef}
           type="text"
@@ -435,7 +412,6 @@ const CounterSearchView = ({
       </div>
     </div>
 
-    {/* Search results */}
     <div className="space-y-2">
       {filteredProducts.map((product) => {
         const status = getProductStatus(product);
@@ -445,12 +421,12 @@ const CounterSearchView = ({
           <div
             key={product.id}
             onClick={() => handleProductSelect(product)}
-            className={`p-4 border rounded-lg cursor-pointer transition-all hover:shadow-md ${
-              status === 'pending' ? 'border-gray-200 hover:border-blue-300' :
-              status === 'counted' ? 'border-blue-200 bg-blue-50' :
-              status === 'match' ? 'border-green-200 bg-green-50' :
-              'border-yellow-200 bg-yellow-50'
-            }`}
+            className={`p - 4 border rounded - lg cursor - pointer transition - all hover: shadow - md ${
+  status === 'pending' ? 'border-gray-200 hover:border-blue-300' :
+    status === 'counted' ? 'border-blue-200 bg-blue-50' :
+      status === 'match' ? 'border-green-200 bg-green-50' :
+        'border-yellow-200 bg-yellow-50'
+} `}
           >
             <div className="flex items-center justify-between">
               <div className="flex-1">
@@ -458,16 +434,17 @@ const CounterSearchView = ({
                   <span className="font-mono text-sm bg-gray-100 px-2 py-1 rounded">
                     {product.sapCode}
                   </span>
-                  {status === 'pending' && <AlertCircle className="w-5 h-5 text-gray-400" />}
-                  {status === 'counted' && <CheckCircle className="w-5 h-5 text-blue-600" />}
-                  {status === 'match' && <CheckCircle className="w-5 h-5 text-green-600" />}
-                  {status === 'diff' && <AlertCircle className="w-5 h-5 text-yellow-600" />}
+                  <span className="text-lg">
+                    {status === 'pending' && '⚠️'}
+                    {status === 'counted' && '✅'}
+                    {status === 'match' && '✅'}
+                    {status === 'diff' && '⚠️'}
+                  </span>
                 </div>
                 <h3 className="font-semibold text-gray-900 mt-1">{product.name}</h3>
                 <p className="text-sm text-gray-600">{product.category}</p>
               </div>
               <div className="text-right">
-                {/* Zliczający nie widzi oczekiwanej ilości */}
                 {!isAdminView && counted !== undefined && (
                   <div className="text-sm font-semibold text-blue-600">
                     Zliczone: {counted}
@@ -476,14 +453,13 @@ const CounterSearchView = ({
                     )}
                   </div>
                 )}
-                {/* Administrator widzi pełne informacje */}
                 {isAdminView && (
                   <>
                     <div className="text-sm text-gray-600">Oczekiwane: {product.expectedQty}</div>
                     {counted !== undefined && (
-                      <div className={`text-sm font-semibold ${
-                        status === 'match' ? 'text-green-600' : 'text-yellow-600'
-                      }`}>
+                      <div className={`text - sm font - semibold ${
+  status === 'match' ? 'text-green-600' : 'text-yellow-600'
+} `}>
                         Zliczone: {counted}
                         {inventoryHistory[product.id] && inventoryHistory[product.id].length > 1 && (
                           <span className="text-xs ml-1">({inventoryHistory[product.id].length} wpisów)</span>
@@ -507,7 +483,6 @@ const CounterSearchView = ({
   </div>
 );
 
-// Komponent widoku zliczającego - wprowadzanie ilości
 const CounterInputView = ({ 
   selectedProduct, setSelectedProduct, inputValue, setInputValue, inventoryData, 
   inventoryHistory, handleQuantitySubmit, handleKeyPress, updateHistoryEntry, 
@@ -531,7 +506,6 @@ const CounterInputView = ({
         <h2 className="text-xl font-bold text-gray-900">{selectedProduct.name}</h2>
         <p className="text-gray-600">{selectedProduct.category}</p>
         <div className="flex items-center justify-between mt-3">
-          {/* Zliczający nie widzi oczekiwanej ilości */}
           {isAdminView && (
             <p className="text-sm text-gray-600">
               Oczekiwana ilość: <span className="font-semibold">{selectedProduct.expectedQty}</span>
@@ -607,11 +581,10 @@ const CounterInputView = ({
       </button>
     </div>
 
-    {/* Historia wpisów dla wybranego produktu */}
     {inventoryHistory[selectedProduct.id] && inventoryHistory[selectedProduct.id].length > 0 && (
       <div className="mt-6 bg-gray-50 p-4 rounded-lg">
         <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-          <History className="w-4 h-4" />
+          <span>📋</span>
           Historia wpisów ({inventoryHistory[selectedProduct.id].length})
         </h4>
         <div className="space-y-2">
@@ -630,7 +603,6 @@ const CounterInputView = ({
   </div>
 );
 
-// Widok administratora
 const AdminView = ({ products, inventoryData, inventoryHistory, getProductStatus }) => {
   const [filterStatus, setFilterStatus] = useState('all');
   const [sortBy, setSortBy] = useState('name');
@@ -666,7 +638,6 @@ const AdminView = ({ products, inventoryData, inventoryHistory, getProductStatus
 
   return (
     <div className="space-y-6">
-      {/* Statystyki */}
       <div className="grid grid-cols-4 gap-4">
         <div className="bg-white p-4 rounded-lg shadow-sm">
           <div className="text-2xl font-bold text-blue-600">{Object.keys(inventoryData).length}</div>
@@ -686,7 +657,6 @@ const AdminView = ({ products, inventoryData, inventoryHistory, getProductStatus
         </div>
       </div>
 
-      {/* Filtry i sortowanie */}
       <div className="bg-white p-4 rounded-lg shadow-sm">
         <div className="flex gap-4 items-center">
           <div>
@@ -718,7 +688,6 @@ const AdminView = ({ products, inventoryData, inventoryHistory, getProductStatus
         </div>
       </div>
 
-      {/* Lista produktów */}
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -734,7 +703,7 @@ const AdminView = ({ products, inventoryData, inventoryHistory, getProductStatus
                 <th className="px-4 py-3 text-center text-sm font-medium text-gray-700">Wpisy</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+<tbody className="divide-y divide-gray-200">
               {filteredAndSortedProducts.map((product) => {
                 const status = getProductStatus(product);
                 const counted = inventoryData[product.id] || 0;
@@ -753,17 +722,19 @@ const AdminView = ({ products, inventoryData, inventoryHistory, getProductStatus
                     <td className="px-4 py-3 text-center text-sm font-semibold">
                       {status === 'pending' ? '-' : counted}
                     </td>
-                    <td className={`px-4 py-3 text-center text-sm font-semibold ${
-                      difference > 0 ? 'text-red-600' : 
-                      difference < 0 ? 'text-blue-600' : 'text-green-600'
-                    }`}>
+                    <td className={`px - 4 py - 3 text - center text - sm font - semibold ${
+  difference > 0 ? 'text-red-600' :
+    difference < 0 ? 'text-blue-600' : 'text-green-600'
+} `}>
                       {status === 'pending' ? '-' : 
-                       difference > 0 ? `+${difference}` : difference}
+                       difference > 0 ? `+ ${ difference } ` : difference}
                     </td>
                     <td className="px-4 py-3 text-center">
-                      {status === 'pending' && <span className="inline-block w-3 h-3 bg-gray-400 rounded-full"></span>}
-                      {status === 'match' && <CheckCircle className="w-5 h-5 text-green-600 mx-auto" />}
-                      {status === 'diff' && <AlertCircle className="w-5 h-5 text-yellow-600 mx-auto" />}
+                      <span className="text-lg">
+                        {status === 'pending' && '⚪'}
+                        {status === 'match' && '✅'}
+                        {status === 'diff' && '⚠️'}
+                      </span>
                     </td>
                     <td className="px-4 py-3 text-center text-sm">
                       {entries.length > 0 ? (
@@ -783,7 +754,6 @@ const AdminView = ({ products, inventoryData, inventoryHistory, getProductStatus
   );
 };
 
-// Komponent dla statystyk zliczającego
 const QuickStats = ({ products, inventoryData, resetProduct }) => (
   <div className="bg-white rounded-lg shadow-sm p-6 mt-6">
     <h3 className="text-lg font-semibold mb-4">Ostatnio zliczone</h3>
@@ -804,7 +774,7 @@ const QuickStats = ({ products, inventoryData, resetProduct }) => (
                 className="text-gray-400 hover:text-red-600 transition-colors"
                 title="Resetuj ilość"
               >
-                <RotateCcw className="w-4 h-4" />
+                <span className="text-sm">🔄</span>
               </button>
             </div>
           </div>
@@ -813,7 +783,6 @@ const QuickStats = ({ products, inventoryData, resetProduct }) => (
   </div>
 );
 
-// Komponent do edycji pojedynczego wpisu w historii
 const HistoryEntry = ({ entry, index, onUpdate, onDelete }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(entry.quantity.toString());
@@ -896,14 +865,14 @@ const HistoryEntry = ({ entry, index, onUpdate, onDelete }) => {
               className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
               title="Edytuj ilość"
             >
-              <Edit3 className="w-4 h-4" />
+              <span className="text-sm">✏️</span>
             </button>
             <button
               onClick={onDelete}
               className="p-1 text-gray-400 hover:text-red-600 transition-colors"
               title="Usuń wpis"
             >
-              <Trash2 className="w-4 h-4" />
+              <span className="text-sm">🗑️</span>
             </button>
           </>
         )}
@@ -911,7 +880,6 @@ const HistoryEntry = ({ entry, index, onUpdate, onDelete }) => {
     </div>
   );
 };
-
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<InventoryApp />);
