@@ -1,8 +1,7 @@
 const { useState, useEffect, useRef } = React;
 const { Search, Package, CheckCircle, AlertCircle, RotateCcw, Edit3, Trash2, History, Settings, Eye, EyeOff } = LucideReact;
 
-import React, { useState, useEffect, useRef } from 'react';
-import { Search, Package, CheckCircle, AlertCircle, RotateCcw, Edit3, Trash2, History, Settings, Eye, EyeOff, Lock } from 'lucide-react';
+
 
 const InventoryApp = () => {
   // Przykładowe dane produktów z 8-cyfrowymi kodami SAP
