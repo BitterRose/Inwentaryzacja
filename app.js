@@ -1,3 +1,6 @@
+const { useState, useEffect, useRef } = React;
+const { Search, Package, CheckCircle, AlertCircle, RotateCcw, Edit3, Trash2, History, Settings, Eye, EyeOff } = LucideReact;
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Package, CheckCircle, AlertCircle, RotateCcw, Edit3, Trash2, History, Settings, Eye, EyeOff, Lock } from 'lucide-react';
 
@@ -910,4 +913,6 @@ const HistoryEntry = ({ entry, index, onUpdate, onDelete }) => {
   );
 };
 
-export default InventoryApp;
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<InventoryApp />);
